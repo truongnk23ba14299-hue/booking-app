@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Các phòng ban — MedBooking</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">MedBooking <span>PHÒNG KHÁM ĐA KHOA</span></a>
+    <nav class="main-nav">
+      <a href="index.html">Trang chủ</a>
+      <a href="departments.html" class="active">Phòng ban</a>
+      <a href="doctors.html">Bác sĩ</a>
+      <a href="booking.html">Đặt lịch</a>
+      <a href="appointments.html">Lịch của tôi</a>
+    </nav>
+    <a href="booking.html" class="btn btn-primary">Đặt ngay</a>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Các phòng ban</h2>
+          <p>Chọn phòng ban để xem thông tin chi tiết</p>
+        </div>
+      </div>
+      <div class="dept-grid" id="deptGrid"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© 2026 MedBooking</span>
+    <span>Hotline: 0123 456 789</span>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script>
+  // Màu nền dự phòng (hiện ngay trong lúc ảnh đang tải), ảnh thật lấy từ DEPT_IMAGES trong data.js
+  const DEPT_COLORS = ["#2F6F5E", "#3B5BA5", "#5C6B62", "#204E42", "#4A7A6C", "#33517E"];
+
+  const grid = document.getElementById("deptGrid");
+  SPECIALTIES.forEach((s, i) => {
+    const count = DOCTORS.filter(d => d.specialty === s).length;
+    const a = document.createElement("a");
+    a.className = "dept-card";
+    a.href = `department.html?specialty=${encodeURIComponent(s)}`;
+    a.style.setProperty("--dept-color", DEPT_COLORS[i % DEPT_COLORS.length]);
+    a.style.setProperty("--dept-bg-image", `url('${DEPT_IMAGES[i % DEPT_IMAGES.length]}')`);
+    a.innerHTML = `
+      <span class="icon-mono">${count} BÁC SĨ</span>
+      <span>${s}</span>
+    `;
+    grid.appendChild(a);
+  });
+</script>
+</body>
+</html>

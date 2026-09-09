@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danh sách bác sĩ — MedBooking</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">MedBooking <span>PHÒNG KHÁM ĐA KHOA</span></a>
+    <nav class="main-nav">
+      <a href="index.html">Trang chủ</a>
+      <a href="departments.html">Phòng ban</a>
+      <a href="doctors.html" class="active">Bác sĩ</a>
+      <a href="booking.html">Đặt lịch</a>
+      <a href="appointments.html">Lịch của tôi</a>
+    </nav>
+    <a href="booking.html" class="btn btn-primary">Đặt ngay</a>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Đội ngũ bác sĩ</h2>
+          <p id="resultCount">Đang tải...</p>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Tìm theo tên bác sĩ...">
+      </div>
+
+      <div class="pill-row" id="specialtyPills" style="margin-bottom:32px;"></div>
+      <div class="doctor-grid" id="doctorGrid"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© 2026 MedBooking</span>
+    <span>Hotline: 0123 456 789</span>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  let activeSpecialty = params.get("specialty") || "all";
+  let searchTerm = "";
+
+  const pillRow = document.getElementById("specialtyPills");
+  const grid = document.getElementById("doctorGrid");
+  const resultCount = document.getElementById("resultCount");
+  const searchInput = document.getElementById("searchInput");
+
+  function renderPills() {
+    pillRow.innerHTML = "";
+    const allPill = document.createElement("button");
+    allPill.className = "pill" + (activeSpecialty === "all" ? " active" : "");
+    allPill.textContent = "Tất cả";
+    allPill.onclick = () => { activeSpecialty = "all"; renderPills(); renderDoctors(); };
+    pillRow.appendChild(allPill);
+
+    SPECIALTIES.forEach(s => {
+      const p = document.createElement("button");
+      p.className = "pill" + (activeSpecialty === s ? " active" : "");
+      p.textContent = s;
+      p.onclick = () => { activeSpecialty = s; renderPills(); renderDoctors(); };
+      pillRow.appendChild(p);
+    });
+  }
+
+  function normalize(str) {
+    // Bỏ dấu tiếng Việt để tìm kiếm không phân biệt dấu (vd: "an" cũng ra được "Ân")
+    return str
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d");
+  }
+
+  function renderDoctors() {
+    let list = activeSpecialty === "all"
+      ? DOCTORS
+      : DOCTORS.filter(d => d.specialty === activeSpecialty);
+
+    if (searchTerm.trim() !== "") {
+      const term = normalize(searchTerm.trim());
+      list = list.filter(d => normalize(d.name).includes(term));
+    }
+
+    resultCount.textContent = `${list.length} bác sĩ`;
+    grid.innerHTML = "";
+
+    list.forEach(d => {
+      const card = document.createElement("div");
+      card.className = "stub";
+      card.innerHTML = `
+        <div class="stub-top">
+          <div class="stub-avatar">${d.initials}</div>
+          <div>
+            <h3>${d.name}</h3>
+            <span class="badge">${d.specialty}</span>
+          </div>
+        </div>
+        <div class="stub-perf"></div>
+        <div class="stub-bottom">
+          <span class="note">${d.years} năm kinh nghiệm · ${d.note}</span>
+        </div>
+        <div class="stub-bottom" style="padding-top:0;">
+          <a class="btn btn-primary" style="width:100%;justify-content:center;" href="booking.html?doctor=${d.id}">Đặt lịch với bác sĩ này</a>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    if (list.length === 0) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><h3>Không tìm thấy bác sĩ phù hợp</h3><p>Thử từ khóa khác hoặc chọn chuyên khoa khác.</p></div>`;
+    }
+  }
+
+  searchInput.addEventListener("input", (e) => {
+    searchTerm = e.target.value;
+    renderDoctors();
+  });
+
+  renderPills();
+  renderDoctors();
+</script>
+</body>
+</html>

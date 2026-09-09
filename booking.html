@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đặt lịch khám — MedBooking</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">MedBooking <span>PHÒNG KHÁM ĐA KHOA</span></a>
+    <nav class="main-nav">
+        <a href="index.html" class="active">Trang chủ</a>
+        <a href="departments.html">Phòng ban</a>
+        <a href="doctors.html">Bác sĩ</a>
+        <a href="booking.html">Đặt lịch</a>
+        <a href="appointments.html">Lịch của tôi</a>
+</nav>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Đặt lịch khám</h2>
+          <p>Điền thông tin bên dưới, hệ thống sẽ giữ chỗ ngay khi bạn xác nhận</p>
+        </div>
+      </div>
+
+      <form class="form-card" id="bookingForm" novalidate>
+
+        <div class="field" id="field-doctor">
+          <label for="doctor">Chọn bác sĩ</label>
+          <select id="doctor" name="doctor">
+            <option value="">— Chọn bác sĩ —</option>
+          </select>
+          <div class="field-error">Vui lòng chọn bác sĩ</div>
+        </div>
+
+        <div class="field" id="field-date">
+          <label for="date">Chọn ngày khám</label>
+          <input type="date" id="date" name="date">
+          <div class="field-error">Vui lòng chọn ngày (không được chọn ngày trong quá khứ)</div>
+        </div>
+
+        <div class="field" id="field-time">
+          <label>Chọn khung giờ</label>
+          <div class="time-grid" id="timeGrid"></div>
+          <div class="hint">Khung giờ đã mờ là đã có người đặt.</div>
+          <div class="field-error">Vui lòng chọn 1 khung giờ còn trống</div>
+        </div>
+
+        <div class="field" id="field-name">
+          <label for="patientName">Họ tên người khám</label>
+          <input type="text" id="patientName" name="patientName" placeholder="Nguyễn Văn A">
+          <div class="field-error">Vui lòng nhập họ tên</div>
+        </div>
+
+        <div class="field" id="field-phone">
+          <label for="phone">Số điện thoại</label>
+          <input type="tel" id="phone" name="phone" placeholder="09xxxxxxxx">
+          <div class="field-error">Số điện thoại không hợp lệ (cần 9–11 chữ số)</div>
+        </div>
+
+        <div class="field">
+          <label for="reason">Triệu chứng / lý do khám (không bắt buộc)</label>
+          <textarea id="reason" name="reason" placeholder="Ví dụ: đau đầu, sốt nhẹ 2 ngày..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Xác nhận đặt lịch</button>
+
+        <div class="form-msg" id="formMsg"></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© 2026 MedBooking</span>
+    <span>Hotline: 0123 456 789</span>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script>
+  const doctorSelect = document.getElementById("doctor");
+  const dateInput = document.getElementById("date");
+  const timeGrid = document.getElementById("timeGrid");
+  const form = document.getElementById("bookingForm");
+  const formMsg = document.getElementById("formMsg");
+
+  let selectedTime = null;
+
+  // Điền dropdown bác sĩ
+  DOCTORS.forEach(d => {
+    const opt = document.createElement("option");
+    opt.value = d.id;
+    opt.textContent = `${d.name} — ${d.specialty}`;
+    doctorSelect.appendChild(opt);
+  });
+
+  // Nếu đến từ trang doctors.html với ?doctor=id thì chọn sẵn
+  const params = new URLSearchParams(window.location.search);
+  const preselect = params.get("doctor");
+  if (preselect) doctorSelect.value = preselect;
+
+  // Giới hạn ngày tối thiểu là hôm nay
+  const today = new Date().toISOString().split("T")[0];
+  dateInput.min = today;
+  dateInput.value = today;
+
+  function renderTimeGrid() {
+    timeGrid.innerHTML = "";
+    selectedTime = null;
+    const doctorId = doctorSelect.value;
+    const date = dateInput.value;
+    const taken = doctorId && date ? getTakenSlots(doctorId, date) : [];
+
+    TIME_SLOTS.forEach(t => {
+      const btn = document.createElement("div");
+      btn.className = "time-slot" + (taken.includes(t) ? " taken" : "");
+      btn.textContent = t;
+      if (!taken.includes(t)) {
+        btn.onclick = () => {
+          document.querySelectorAll(".time-slot").forEach(el => el.classList.remove("selected"));
+          btn.classList.add("selected");
+          selectedTime = t;
+          clearFieldError("field-time");
+        };
+      }
+      timeGrid.appendChild(btn);
+    });
+  }
+
+  doctorSelect.addEventListener("change", renderTimeGrid);
+  dateInput.addEventListener("change", renderTimeGrid);
+  renderTimeGrid();
+
+  function showFieldError(fieldId) {
+    document.getElementById(fieldId).classList.add("invalid");
+  }
+  function clearFieldError(fieldId) {
+    document.getElementById(fieldId).classList.remove("invalid");
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    let valid = true;
+
+    ["field-doctor", "field-date", "field-time", "field-name", "field-phone"].forEach(clearFieldError);
+
+    if (!doctorSelect.value) { showFieldError("field-doctor"); valid = false; }
+    if (!dateInput.value || dateInput.value < today) { showFieldError("field-date"); valid = false; }
+    if (!selectedTime) { showFieldError("field-time"); valid = false; }
+
+    const name = document.getElementById("patientName").value.trim();
+    if (name.length < 2) { showFieldError("field-name"); valid = false; }
+
+    const phone = document.getElementById("phone").value.trim();
+    if (!/^[0-9]{9,11}$/.test(phone)) { showFieldError("field-phone"); valid = false; }
+
+    formMsg.className = "form-msg";
+    if (!valid) {
+      formMsg.textContent = "Vui lòng kiểm tra lại các trường được đánh dấu đỏ.";
+      formMsg.classList.add("show", "error");
+      return;
+    }
+
+    const doctor = DOCTORS.find(d => d.id === doctorSelect.value);
+    const appointments = getAppointments();
+    appointments.push({
+      id: "a" + Date.now(),
+      doctorId: doctor.id,
+      doctorName: doctor.name,
+      specialty: doctor.specialty,
+      date: dateInput.value,
+      time: selectedTime,
+      patientName: name,
+      phone: phone,
+      reason: document.getElementById("reason").value.trim(),
+      status: "upcoming"
+    });
+    saveAppointments(appointments);
+
+    formMsg.textContent = `Đặt lịch thành công với ${doctor.name} lúc ${selectedTime} ngày ${dateInput.value}. Xem trong mục "Lịch của tôi".`;
+    formMsg.classList.add("show", "success");
+    form.reset();
+    dateInput.value = today;
+    renderTimeGrid();
+  });
+</script>
+</body>
+</html>

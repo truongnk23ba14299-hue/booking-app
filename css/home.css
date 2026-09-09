@@ -1,0 +1,211 @@
+/* ---------- Hero (ảnh nền full-width) ---------- */
+.hero-photo {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  background-image:
+    linear-gradient(100deg, rgba(15, 26, 20, 0.82) 0%, rgba(15, 26, 20, 0.55) 45%, rgba(15, 26, 20, 0.25) 100%),
+    url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1800&q=80');
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+.hero-photo-content { max-width: 620px; }
+
+.hero-photo .eyebrow-mono { color: #9FD8C4; }
+
+.hero-photo h1 {
+  font-family: var(--font-display);
+  font-size: 52px;
+  line-height: 1.1;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.hero-photo h1 .highlight {
+  display: block;
+  color: #9FD8C4;
+}
+
+.hero-photo p {
+  font-size: 17px;
+  color: rgba(255,255,255,0.85);
+  max-width: 46ch;
+  margin: 20px 0 32px;
+}
+
+.hero-photo .btn-outline {
+  border-color: rgba(255,255,255,0.6);
+  color: #fff;
+}
+.hero-photo .btn-outline:hover { background: #fff; color: var(--ink); }
+
+/* Ô liên hệ khẩn cấp nổi góc dưới màn hình */
+.emergency-chip {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--danger);
+  color: #fff;
+  padding: 14px 16px;
+  border-radius: 6px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  max-width: 320px;
+}
+
+.emergency-chip .txt { font-size: 13px; line-height: 1.4; }
+.emergency-chip .txt strong { display: block; font-size: 13.5px; }
+
+.emergency-chip a.call {
+  background: #fff;
+  color: var(--danger);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 4px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.emergency-chip .close {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.8);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ---------- Feature / "Vì sao chọn chúng tôi" ---------- */
+.section-alt { background: var(--bg-raised); }
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.feature-card {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 26px;
+}
+
+.feature-card .icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #E3EFE9;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+
+.feature-card h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.feature-card p { color: var(--muted); font-size: 14.5px; }
+
+.hero {
+  padding: 72px 0 56px;
+}
+
+.hero .wrap {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.eyebrow-mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--primary);
+  margin-bottom: 14px;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 1.08;
+  font-weight: 600;
+  max-width: 15ch;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 42ch;
+  margin-bottom: 32px;
+}
+
+.hero-actions { display: flex; gap: 14px; }
+
+/* Decorative slot grid in hero */
+.slot-grid {
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.slot-grid-head {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.slot-grid-body {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.slot {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: #E4EAE2;
+}
+.slot.busy { background: var(--primary); opacity: 0.85; }
+.slot.mark { background: var(--accent); }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.step .num {
+  font-family: var(--font-mono);
+  color: var(--primary);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.step h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.step p { color: var(--muted); font-size: 14.5px; }

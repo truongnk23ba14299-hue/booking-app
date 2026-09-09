@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedBooking — Đặt lịch khám bệnh</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">MedBooking <span>PHÒNG KHÁM ĐA KHOA</span></a>
+    <nav class="main-nav">
+        <a href="index.html" class="active">Trang chủ</a>
+        <a href="departments.html">Phòng ban</a>
+        <a href="doctors.html">Bác sĩ</a>
+        <a href="booking.html">Đặt lịch</a>
+        <a href="appointments.html">Lịch của tôi</a>
+    </nav>
+    <a href="booking.html" class="btn btn-primary">Đặt ngay</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO: ảnh nền full-width, chữ đè lên, 2 nút CTA -->
+  <section class="hero-photo">
+    <div class="wrap">
+      <div class="hero-photo-content">
+        <div class="eyebrow-mono">MỞ CỬA 24/7 · TIẾP NHẬN CẤP CỨU</div>
+        <h1>Chào mừng đến với<span class="highlight">Phòng khám MedBooking</span></h1>
+        <p>Đặt lịch khám trực tuyến, xem hồ sơ bác sĩ theo chuyên khoa, và quản lý lịch hẹn của bạn chỉ trong vài bước.</p>
+        <div class="hero-actions">
+          <a href="booking.html" class="btn btn-primary">Đặt lịch hẹn</a>
+          <a href="#lien-he" class="btn btn-outline">Liên hệ khẩn cấp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHUYÊN KHOA -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Chuyên khoa</h2>
+          <p>Chọn đúng chuyên khoa để tìm bác sĩ phù hợp</p>
+        </div>
+      </div>
+      <div class="pill-row" id="specialtyPills"></div>
+    </div>
+  </section>
+
+  <!-- BÁC SĨ NỔI BẬT -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Bác sĩ nổi bật</h2>
+          <p>Một vài gương mặt tiêu biểu của phòng khám</p>
+        </div>
+        <a href="doctors.html" class="btn btn-outline">Xem tất cả</a>
+      </div>
+      <div class="doctor-grid" id="doctorPreview"></div>
+    </div>
+  </section>
+
+  <!-- VÌ SAO CHỌN CHÚNG TÔI -->
+  <section class="section" id="lien-he">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Vì sao chọn chúng tôi</h2>
+          <p>Ba lý do bệnh nhân quay lại</p>
+        </div>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="icon">01</div>
+          <h3>Đặt lịch không cần chờ</h3>
+          <p>Xem khung giờ trống theo thời gian thực, xác nhận ngay không cần gọi điện.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">02</div>
+          <h3>Bác sĩ đúng chuyên khoa</h3>
+          <p>Lọc theo chuyên khoa, xem kinh nghiệm trước khi quyết định đặt lịch.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">03</div>
+          <h3>Quản lý lịch hẹn dễ dàng</h3>
+          <p>Xem, đổi hoặc hủy lịch hẹn bất cứ lúc nào ngay trên trang.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© 2026 MedBooking</span>
+    <span>Hotline: 0123 456 789</span>
+  </div>
+</footer>
+
+<!-- Ô liên hệ khẩn cấp nổi góc dưới -->
+<div class="emergency-chip" id="emergencyChip">
+  <span class="txt"><strong>Dịch vụ khẩn cấp 24/7</strong>Xe cấp cứu & Chăm sóc</span>
+  <a href="tel:0123456789" class="call">Gọi</a>
+  <button class="close" id="closeChip" aria-label="Đóng">✕</button>
+</div>
+
+<script src="js/data.js"></script>
+<script>
+  // Render pill chuyên khoa
+  const pillRow = document.getElementById("specialtyPills");
+  SPECIALTIES.forEach(s => {
+    const a = document.createElement("a");
+    a.href = `doctors.html?specialty=${encodeURIComponent(s)}`;
+    a.className = "pill";
+    a.textContent = s;
+    pillRow.appendChild(a);
+  });
+
+  // Render 3 bác sĩ nổi bật (lấy 3 người đầu trong data)
+  const preview = document.getElementById("doctorPreview");
+  DOCTORS.slice(0, 3).forEach(d => {
+    const card = document.createElement("div");
+    card.className = "stub";
+    card.innerHTML = `
+      <div class="stub-top">
+        <div class="stub-avatar">${d.initials}</div>
+        <div>
+          <h3>${d.name}</h3>
+          <span class="badge">${d.specialty}</span>
+        </div>
+      </div>
+      <div class="stub-perf"></div>
+      <div class="stub-bottom">
+        <span class="note">${d.years} năm kinh nghiệm · ${d.note}</span>
+      </div>
+      <div class="stub-bottom" style="padding-top:0;">
+        <a class="btn btn-primary" style="width:100%;justify-content:center;" href="booking.html?doctor=${d.id}">Đặt lịch với bác sĩ này</a>
+      </div>
+    `;
+    preview.appendChild(card);
+  });
+
+  // Đóng ô liên hệ khẩn cấp
+  document.getElementById("closeChip").addEventListener("click", () => {
+    document.getElementById("emergencyChip").style.display = "none";
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chi tiết phòng ban — MedBooking</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">MedBooking <span>PHÒNG KHÁM ĐA KHOA</span></a>
+    <nav class="main-nav">
+      <a href="index.html">Trang chủ</a>
+      <a href="departments.html" class="active">Phòng ban</a>
+      <a href="doctors.html">Bác sĩ</a>
+      <a href="booking.html">Đặt lịch</a>
+      <a href="appointments.html">Lịch của tôi</a>
+    </nav>
+    <a href="booking.html" class="btn btn-primary">Đặt ngay</a>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:40px;">
+    <div class="wrap" style="max-width: 860px;">
+
+      <a href="departments.html" class="back-link">← Trở lại các phòng ban</a>
+
+      <h1 class="dept-detail-title" id="deptTitle">—</h1>
+      <p class="dept-detail-subtitle" id="deptSubtitle">—</p>
+
+      <div class="dept-banner" id="deptBanner"></div>
+
+      <div class="dept-section">
+        <h2>Giới thiệu về khoa</h2>
+        <p id="deptIntro">—</p>
+      </div>
+
+      <div class="dept-section">
+        <h2>Các dịch vụ chúng tôi cung cấp</h2>
+        <div class="service-grid" id="deptServices"></div>
+      </div>
+
+      <div class="doctor-note-box">
+        <h3>Lời nhắn của bác sĩ</h3>
+        <p id="deptNote">—</p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© 2026 MedBooking</span>
+    <span>Hotline: 0123 456 789</span>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const specialty = params.get("specialty") || SPECIALTIES[0];
+  const index = SPECIALTIES.indexOf(specialty);
+  const info = DEPT_INFO[specialty];
+
+  document.title = `${specialty} — MedBooking`;
+  document.getElementById("deptTitle").textContent = specialty;
+
+  if (info) {
+    document.getElementById("deptSubtitle").textContent = info.subtitle;
+    document.getElementById("deptIntro").textContent = info.intro;
+    document.getElementById("deptNote").textContent = info.doctorNote;
+
+    const grid = document.getElementById("deptServices");
+    info.services.forEach(s => {
+      const div = document.createElement("div");
+      div.className = "service-item";
+      div.textContent = "✓ " + s;
+      grid.appendChild(div);
+    });
+  }
+
+  const banner = document.getElementById("deptBanner");
+  const imgUrl = DEPT_IMAGES[index >= 0 ? index : 0];
+  banner.style.backgroundImage = `url('${imgUrl}')`;
+</script>
+</body>
+</html>

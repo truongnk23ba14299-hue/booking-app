@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lịch của tôi — MedBooking</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">MedBooking <span>PHÒNG KHÁM ĐA KHOA</span></a>
+    <nav class="main-nav">
+        <a href="index.html" class="active">Trang chủ</a>
+        <a href="departments.html">Phòng ban</a>
+        <a href="doctors.html">Bác sĩ</a>
+        <a href="booking.html">Đặt lịch</a>
+        <a href="appointments.html">Lịch của tôi</a>
+</nav>
+  </div>
+</header>
+
+<main>
+  <section class="section" style="padding-top:48px;">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Lịch hẹn của tôi</h2>
+          <p id="apptCount">—</p>
+        </div>
+        <a href="booking.html" class="btn btn-primary">+ Đặt lịch mới</a>
+      </div>
+      <div class="appt-list" id="apptList"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>© 2026 MedBooking</span>
+    <span>Hotline: 0123 456 789</span>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script>
+  const apptList = document.getElementById("apptList");
+  const apptCount = document.getElementById("apptCount");
+
+  function formatDate(iso) {
+    const [y, m, d] = iso.split("-");
+    return `${d}/${m}/${y}`;
+  }
+
+  function render() {
+    const list = getAppointments().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+    apptCount.textContent = `${list.length} lịch hẹn`;
+    apptList.innerHTML = "";
+
+    if (list.length === 0) {
+      apptList.innerHTML = `
+        <div class="empty-state">
+          <h3>Bạn chưa có lịch hẹn nào</h3>
+          <p>Đặt lịch khám để xem chi tiết tại đây.</p>
+        </div>`;
+      return;
+    }
+
+    list.forEach(a => {
+      const row = document.createElement("div");
+      row.className = "appt-stub";
+      row.innerHTML = `
+        <div>
+          <h3>${a.doctorName}</h3>
+          <div class="when">${formatDate(a.date)} · ${a.time} · ${a.specialty}</div>
+        </div>
+        <span class="status-tag ${a.status === "cancelled" ? "cancelled" : "upcoming"}">
+          ${a.status === "cancelled" ? "Đã hủy" : "Sắp tới"}
+        </span>
+        <div>
+          ${a.status === "cancelled"
+            ? ""
+            : `<button class="btn btn-danger" data-id="${a.id}">Hủy lịch</button>`}
+        </div>
+      `;
+      apptList.appendChild(row);
+    });
+
+    document.querySelectorAll(".btn-danger").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-id");
+        const list = getAppointments().map(a =>
+          a.id === id ? { ...a, status: "cancelled" } : a
+        );
+        saveAppointments(list);
+        render();
+      });
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>
